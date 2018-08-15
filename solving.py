@@ -12,15 +12,18 @@ lowest_cost = None
 
 machine_objects_lst.reverse()
 
-while True:
+def random_algo():
     random.shuffle(job_objects_lst)
 
-    for i, job in enumerate(job_objects_lst[:10]):
+    for i, job in enumerate(job_objects_lst):
         print('i', i)
         for machine in machine_objects_lst:
             if machine.add_job(job):
                 break
 
+
+while True:
+    random_algo()
 
     cost = compute_cost(machine_objects_lst)
     if lowest_cost == None or cost < lowest_cost:
@@ -30,14 +33,16 @@ while True:
             spamwriter = csv.writer(csvfile)
 
             for machine in machine_objects_lst:
-                if machine.jobs:
+                if DEBUG and machine.jobs:
                     print('jobs', len(machine.jobs))
                 for job in machine.jobs:
-                    print(job.inst_id + ', ' + machine.machine_id)
+                    if DEBUG:
+                        print(job.inst_id + ', ' + machine.machine_id)
                     spamwriter.writerow(job.inst_id + ', ' + machine.machine_id)
 
     for machine in machine_objects_lst:
         machine.reset()
 
+    print('cost', cost, lowest_cost)
     break
 
