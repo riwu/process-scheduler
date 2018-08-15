@@ -14,9 +14,9 @@ machine_objects_lst.reverse()
 big_machine_cpu = machine_objects_lst[0].cpu_0
 small_machine_cpu = machine_objects_lst[-1].cpu_0
 
-def add_to_machine(job):
+def add_to_machine(job, only_use_new_machine = False):
     for machine in machine_objects_lst:
-        if machine.add_job(job):
+        if machine.add_job(job, only_use_new_machine):
             return
 
 def allocate_jobs_to_new_machine(jobs, cpu):
