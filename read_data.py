@@ -67,6 +67,7 @@ class Machine(object):
 
     def add_job(self, new_job, only_use_new_machine=False):
         if not new_job.check_interference(self):
+            debug('Interference detected')
             return False
             # if not new_job.assigned_machine_id:
             #     print("Failed job: " + str(new_job))
@@ -78,9 +79,10 @@ class Machine(object):
             job_k = getattr(new_job, k)
             machine_k_capacity = self.original_dict[k]
             if only_use_new_machine and self.jobs:
-                debug('New machine requested but this is not a new machine')
+                debug('New machine requested but this is not a new machine', only_use_new_machine, self.jobs)
                 return False
             if 'cpu' in k and job_k > CPU_SOFT_LIMIT * machine_k_capacity:
+                debug('cpu constraint', job_k, CPU_SOFT_LIMIT * machine_k_capacity)
                 return False
             if machine_k - job_k < 0:
                 debug('resource constraint')
