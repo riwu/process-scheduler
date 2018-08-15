@@ -23,6 +23,11 @@ NUM_OF_LIMITED_JOBS = 9338
 CPU_SOFT_LIMIT = 0.5
 DEBUG = False
 
+def debug(*msg):
+    if DEBUG:
+        print(*msg)
+
+
 class Machine(object):
     def __init__(self, d):
         self.__dict__ = d
@@ -51,14 +56,12 @@ class Machine(object):
             job_k = getattr(new_job, k)
             machine_k_capacity = self.original_dict[k]
             if only_use_new_machine and not self.jobs:
-                if DEBUG:
-                    print('New machine requested but this is not a new machine')
+                debug('New machine requested but this is not a new machine')
                 return False
             if 'cpu' in k and job_k > CPU_SOFT_LIMIT * machine_k_capacity:
                 return False
             if machine_k - job_k < 0:
-                if DEBUG:
-                    print('resource constraint')
+                debug('resource constraint')
                 return False
 
                 # raise Exception("Attempting to use more than 100% of resource " + k + " .Current Machine State: " + self + " . New job state: " + new_job)
@@ -72,8 +75,7 @@ class Machine(object):
             self.apps[new_job.app_id] += 1
         else:
             self.apps[new_job.app_id] = 1
-        if DEBUG:
-            print('new job', new_job)
+        debug('new job', new_job)
         return True
 
 class Job(object):
