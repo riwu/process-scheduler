@@ -197,8 +197,9 @@ def data_parsing_main():
         else:
             row["interference"] = {}
         # row["assigned_machine_id"] = None
-        jobs_with_resources_dict[row["inst_id"]] = row
-        job_objects_lst.append(Job(row, job_limits[row["app_id"]]))
+        j = Job(row, job_limits[row["app_id"]])
+        jobs_with_resources_dict[row["inst_id"]] = j
+        job_objects_lst.append(j)
 
     machine_dict = {}
     machine_objects_lst = []
@@ -214,7 +215,8 @@ def data_parsing_main():
         new_item["p"] = row["p_capacity"]
         new_item["m"] = row["m_capacity"]
         new_item["pm"] = row["pm_capacity"]
-        machine_dict[row["machine_id"]] = new_item
-        machine_objects_lst.append(Machine(new_item))
+        m = Machine(new_item)
+        machine_dict[row["machine_id"]] = m
+        machine_objects_lst.append(m)
 
     return [jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst]
