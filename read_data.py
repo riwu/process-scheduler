@@ -42,7 +42,7 @@ ELEMENTS_TO_UPDATE = ['disk', 'p', 'm', 'pm', 'cpu_0', 'cpu_1', 'cpu_2', 'cpu_3'
 NUM_OF_JOBS = 68224
 NUM_OF_LIMITED_JOBS = 9338
 CPU_SOFT_LIMIT = 1
-CSV_FILE = "scheduling_instance_deploy1k.csv"
+CSV_FILE = "scheduling_instance_deploy10k.csv"
 DEBUG = False
 
 
@@ -66,28 +66,29 @@ class Machine(object):
         self.jobs = []
         self.apps = {}
 
-    def add_job(self, new_job, only_use_new_machine=False):
-        if not new_job.check_interference(self):
-            debug('Interference detected')
-            return False
-            # if not new_job.assigned_machine_id:
-            #     print("Failed job: " + str(new_job))
-            #     return False
-            # raise Exception("This job has already been prescheduled! " + str(new_job))
-        # check if resource constraints valid
-        for k in ELEMENTS_TO_UPDATE:
-            machine_k = getattr(self, k)
-            job_k = getattr(new_job, k)
-            machine_k_capacity = self.original_dict[k]
-            if only_use_new_machine and self.jobs:
-                debug('New machine requested but this is not a new machine', only_use_new_machine, self.jobs)
+    def add_job(self, new_job, only_use_new_machine = False, initialisation = False):
+        if not initialisation:
+            if not new_job.check_interference(self):
+                debug('Interference detected')
                 return False
-            if not only_use_new_machine and 'cpu' in k and job_k > CPU_SOFT_LIMIT * machine_k_capacity:
-                debug('cpu constraint', job_k, CPU_SOFT_LIMIT * machine_k_capacity)
-                return False
-            if machine_k - job_k < 0:
-                debug('resource constraint')
-                return False
+                # if not new_job.assigned_machine_id:
+                #     print("Failed job: " + str(new_job))
+                #     return False
+                # raise Exception("This job has already been prescheduled! " + str(new_job))
+            # check if resource constraints valid
+            for k in ELEMENTS_TO_UPDATE:
+                machine_k = getattr(self, k)
+                job_k = getattr(new_job, k)
+                machine_k_capacity = self.original_dict[k]
+                if only_use_new_machine and self.jobs:
+                    debug('New machine requested but this is not a new machine', only_use_new_machine, self.jobs)
+                    return False
+                if not only_use_new_machine and 'cpu' in k and job_k > CPU_SOFT_LIMIT * machine_k_capacity:
+                    debug('cpu constraint', job_k, CPU_SOFT_LIMIT * machine_k_capacity)
+                    return False
+                if machine_k - job_k < 0:
+                    debug('resource constraint')
+                    return False
 
                 # raise Exception("Attempting to use more than 100% of resource " + k + " .Current Machine State: " + self + " . New job state: " + new_job)
         # actually start mutating
@@ -103,6 +104,9 @@ class Machine(object):
         debug('new job', new_job)
         return True
 
+    def remove_job(self, index):
+        job = self.jobs.pop(index)
+        self.apps[job.app_id] -= 1
 
 class Job(object):
     def __init__(self, d, interference_dict):
@@ -123,12 +127,11 @@ class Job(object):
                 return False
 
 
-            if machine.apps.get(job.app_id) > self.interference.get(job.app_id, 0):
+            if self.interference.get(job.app_id, 0) < machine.apps.get(job.app_id):
                 return False
 
             # for k, v in self.interference.items():
-            #     if k == job.app_id and v < machine.apps.get(job.app_id, 0) + 1:
-            #         debug('interfered2')
+            #     if k == job.app_id and v < machine.apps.get(job.app_id) + 1:
             #         return False
 
         return True
