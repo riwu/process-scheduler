@@ -12,6 +12,7 @@
 import pandas as pd
 import os
 from collections import defaultdict
+import copy
 
 pd.set_option('display.max_columns', None)
 DATA_FOLDER = "scheduling_data_files"
@@ -25,17 +26,22 @@ class Machine(object):
         self.__dict__ = d
         self.jobs = []
         self.apps = {}
+        self.original_dict = copy.deepcopy(d)
 
     def __repr__(self):
         return str(self.__dict__)
 
+    def reset(self):
+        self.__dict__ = self.original_dict
+        self.jobs = []
+        self.apps = {}
 
     def add_job(self, new_job):
         if not new_job.check_interference(self):
             return False
-        if not new_job.machine_id:
-            print("Failed job: " + str(new_job))
-            return False
+        # if not new_job.assigned_machine_id:
+        #     print("Failed job: " + str(new_job))
+        #     return False
             # raise Exception("This job has already been prescheduled! " + str(new_job))
         #check if resource constraints valid
         for k in ELEMENTS_TO_UPDATE:
@@ -65,7 +71,7 @@ class Machine(object):
 class Job(object):
     def __init__(self,d, interference_dict):
         self.__dict__ = d
-        self.assigned_machine_id = None
+        # self.assigned_machine_id = None
         self.interference = interference_dict
 
     def check_interference(self, machine):
@@ -132,7 +138,7 @@ def data_parsing_main():
             row["interference"] = job_limits["app_id"]
         else:
             row["interference"] = {}
-        row["assigned_machine_id"] = None
+        # row["assigned_machine_id"] = None
         jobs_with_resources_dict[row["inst_id"]] = row
         job_objects_lst.append(Job(row, job_limits[row["app_id"]]))
     print(jobs_with_resources_dict["inst_11900"])
