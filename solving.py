@@ -7,22 +7,31 @@ import csv
 
 jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst = data_parsing_main()
 
-random.shuffle(job_objects_lst)
+highest_score = 0
+
 machine_objects_lst.reverse()
 
-for i, job in enumerate(job_objects_lst[:10]):
-    print('i', i)
-    for machine in machine_objects_lst:
-        if machine_objects_lst[0].add_job(job):
-            break
+while True:
+    random.shuffle(job_objects_lst)
 
-with open('output.csv', 'w') as csvfile:
-    spamwriter = csv.writer(csvfile)
+    for i, job in enumerate(job_objects_lst[:10]):
+        print('i', i)
+        for machine in machine_objects_lst:
+            if machine.add_job(job):
+                break
 
-    for machine in machine_objects_lst:
-        if machine.jobs:
-            print('jobs', len(machine.jobs))
-        for job in machine.jobs:
-            print(job.inst_id + ', ' + machine.machine_id)
-            spamwriter.writerow(job.inst_id, machine.machine_id)
+    # score = compute_cost(machine_objects_lst)
+
+
+    with open('output.csv', 'w') as csvfile:
+        spamwriter = csv.writer(csvfile)
+
+        for machine in machine_objects_lst:
+            if machine.jobs:
+                print('jobs', len(machine.jobs))
+            for job in machine.jobs:
+                print(job.inst_id + ', ' + machine.machine_id)
+                spamwriter.writerow(job.inst_id, machine.machine_id)
+
+    break
 

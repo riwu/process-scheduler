@@ -31,7 +31,7 @@ class Machine(object):
 
 
     def add_job(self, new_job):
-        if new_job.check_interference(self):
+        if not new_job.check_interference(self):
             return False
         if new_job.machine_id != None:
             print("Failed job: " + str(new_job))
@@ -77,7 +77,6 @@ class Job(object):
             interference = job.interference
             for k,v in interference:
                 if k == self.app_id and v < cnt_new_app_id:
-                    print('int fail', v, cnt_new_app_id)
                     return False
         return True
 
