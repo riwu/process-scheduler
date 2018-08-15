@@ -24,31 +24,59 @@ class Machine(object):
     def __init__(self, d):
         self.__dict__ = d
         self.jobs = []
-        self.apps = []
+        self.apps = {}
 
     def __repr__(self):
         return str(self.__dict__)
 
+
     def add_job(self, new_job):
+        if new_job.check_interference(self):
+            return False
         if new_job.machine_id != None:
             print("Failed job: " + str(new_job))
-            raise Exception("This job has already been prescheduled! " + str(new_job))
+            return False
+            # raise Exception("This job has already been prescheduled! " + str(new_job))
+        #check if resource constraints valid
+        for k in ELEMENTS_TO_UPDATE:
+            machine_k = getattr(self, k)
+            job_k = getattr(new_job, k)
+            if machine_k - job_k < 0:
+                return False
+                # raise Exception("Attempting to use more than 100% of resource " + k + " .Current Machine State: " + self + " . New job state: " + new_job)
+        # actually start mutating
+        for k in ELEMENTS_TO_UPDATE:
+            machine_k = getattr(self, k)
+            job_k = getattr(new_job, k)
+            if machine_k - job_k < 0:
+                return False
+                # raise Exception("Attempting to use more than 100% of resource " + k + " .Current Machine State: " + self + " . New job state: " + new_job)
+            setattr(self, k, machine_k - job_k )
         self.jobs.append(new_job)
         if new_job.app_id in self.apps:
             self.apps[new_job.app_id] += 1
         else:
             self.apps[new_job.app_id] = 1
-        for k in ELEMENTS_TO_UPDATE:
-            machine_k = getattr(self, k)
-            job_k = getattr(new_job, k)
-            if machine_k - job_k < 0:
-                raise Exception("Attempting to use more than 100% of resource " + k + " .Current Machine State: " + self + " . New job state: " + new_job)
-            setattr(self, k, machine_k - job_k )
+        return True
 
 class Job(object):
     def __init__(self,d, interference_dict):
         self.__dict__ = d
+        self.assigned_machine_id = None
         self.interference = interference_dict
+
+    def check_interference(self, machine):
+        if self.app_id in machine.apps:
+            cnt_new_app_id = machine.apps[self.app_id] + 1
+        else:
+            cnt_new_app_id = 1
+        for job in machine.jobs:
+            interference = job.interference
+            for k,v in interference:
+                if k == self.app_id and v < cnt_new_app_id:
+                    return False
+        return True
+
 
     def __repr__(self):
         return str(self.__dict__)
@@ -97,8 +125,13 @@ def data_parsing_main():
     jobs_with_resources_dict = {}
     job_objects_lst = []
     for row in jobs_with_resources.to_dict(orient="records"):
+        if row["app_id"] in job_limits:
+            row["interference"] = job_limits["app_id"]
+        else:
+            row["interference"] = {}
+        row["assigned_machine_id"] = None
         jobs_with_resources_dict[row["inst_id"]] = row
-        job_objects_lst.append(Job(row, job_limits[row["inst_id"]]))
+        job_objects_lst.append(Job(row, job_limits[row["app_id"]]))
     print(jobs_with_resources_dict["inst_11900"])
     #check job count
     assert(len(jobs_with_resources_dict) == NUM_OF_JOBS)
@@ -121,12 +154,12 @@ def data_parsing_main():
         machine_dict[row["machine_id"]] = new_item
         machine_objects_lst.append(Machine(new_item))
 
-    print(jobs_with_resources_dict["inst_11900"].keys())
-    print(jobs_with_resources_dict["inst_11900"])
-    print(job_objects_lst[:5])
+    print("inst 11900 keys: ", jobs_with_resources_dict["inst_11900"].keys())
+    print("inst 11900 full: ", jobs_with_resources_dict["inst_11900"])
+    print("JOB objects list: ", job_objects_lst[-5:])
 
-    print(machine_dict["machine_5594"])
-    print(machine_objects_lst[:5])
+    print("machine 5594: ", machine_dict["machine_5594"])
+    print("machine last 5: ", machine_objects_lst[-5:])
     print("Difference")
     print(list(set(jobs_with_resources_dict["inst_11900"].keys()) - set(machine_dict["machine_5594"].keys())))
     return [jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst]
