@@ -33,7 +33,7 @@ class Machine(object):
     def add_job(self, new_job):
         if not new_job.check_interference(self):
             return False
-        if new_job.machine_id != None:
+        if not new_job.machine_id:
             print("Failed job: " + str(new_job))
             return False
             # raise Exception("This job has already been prescheduled! " + str(new_job))
@@ -75,7 +75,7 @@ class Job(object):
             cnt_new_app_id = 1
         for job in machine.jobs:
             interference = job.interference
-            for k,v in interference:
+            for k,v in interference.items():
                 if k == self.app_id and v < cnt_new_app_id:
                     return False
         return True

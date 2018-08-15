@@ -31,7 +31,7 @@ while True:
                 print('jobs', len(machine.jobs))
             for job in machine.jobs:
                 print(job.inst_id + ', ' + machine.machine_id)
-                spamwriter.writerow(job.inst_id, machine.machine_id)
+                spamwriter.writerow(job.inst_id + ', ' + machine.machine_id)
 
     break
 
