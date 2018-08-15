@@ -44,9 +44,8 @@ def random_algo():
 
     job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.2)
     debug('big jobs done')
-    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.5)
+    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.4)
     debug('medium jobs')
-
     for i, job in enumerate(job_objects_lst_copy):
         print('i', i)
         add_to_machine(job)
