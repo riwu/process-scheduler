@@ -62,7 +62,8 @@ def random_algo():
 
 while True:
     random_algo()
-    file_name = 'Judge/output' + str(time.time()).replace('.', '') + '.csv'
+    timestamp = '' # str(time.time()).replace('.', '')
+    file_name = 'Judge/output' + timestamp + '.csv'
     cost = compute_cost(machine_objects_lst)
     if lowest_cost == None or cost < lowest_cost:
         lowest_cost = cost

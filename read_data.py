@@ -118,11 +118,19 @@ class Job(object):
             cnt_new_app_id = machine.apps[self.app_id] + 1
         else:
             cnt_new_app_id = 1
+
         for job in machine.jobs:
             interference = job.interference
             for k, v in interference.items():
                 if k == self.app_id and v < cnt_new_app_id:
+                    debug('interfered')
                     return False
+
+            for k, v in self.interference.items():
+                if k == job.app_id and v < machine.apps.get(job.app_id, 0) + 1:
+                    debug('interfered2')
+                    return False
+
         return True
 
     def get_max_cpu(self):
@@ -174,7 +182,6 @@ def data_parsing_main():
     # check job limit count
     print("LENGTH OF JOB LIMITS ", len(job_limits.keys()))
     print(job_limits)
-    assert (len(job_limits.keys()) == NUM_OF_LIMITED_JOBS)
 
     print(jobs.columns)
     print(app_resources.columns)
@@ -189,9 +196,6 @@ def data_parsing_main():
         # row["assigned_machine_id"] = None
         jobs_with_resources_dict[row["inst_id"]] = row
         job_objects_lst.append(Job(row, job_limits[row["app_id"]]))
-    print(jobs_with_resources_dict["inst_11900"])
-    # check job count
-    assert (len(jobs_with_resources_dict) == NUM_OF_JOBS)
 
     machine_dict = {}
     machine_objects_lst = []
@@ -210,12 +214,4 @@ def data_parsing_main():
         machine_dict[row["machine_id"]] = new_item
         machine_objects_lst.append(Machine(new_item))
 
-    print("inst 11900 keys: ", jobs_with_resources_dict["inst_11900"].keys())
-    print("inst 11900 full: ", jobs_with_resources_dict["inst_11900"])
-    print("JOB objects list: ", job_objects_lst[-5:])
-
-    print("machine 5594: ", machine_dict["machine_5594"])
-    print("machine last 5: ", machine_objects_lst[-5:])
-    print("Difference")
-    print(list(set(jobs_with_resources_dict["inst_11900"].keys()) - set(machine_dict["machine_5594"].keys())))
     return [jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst]
