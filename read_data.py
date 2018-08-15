@@ -17,11 +17,33 @@ import copy
 pd.set_option('display.max_columns', None)
 DATA_FOLDER = "scheduling_data_files"
 DURATION = 98
-ELEMENTS_TO_UPDATE = ['disk', 'p', 'm', 'pm', 'cpu_0', 'cpu_1', 'cpu_2', 'cpu_3', 'cpu_4', 'cpu_5', 'cpu_6', 'cpu_7', 'cpu_8', 'cpu_9', 'cpu_10', 'cpu_11', 'cpu_12', 'cpu_13', 'cpu_14', 'cpu_15', 'cpu_16', 'cpu_17', 'cpu_18', 'cpu_19', 'cpu_20', 'cpu_21', 'cpu_22', 'cpu_23', 'cpu_24', 'cpu_25', 'cpu_26', 'cpu_27', 'cpu_28', 'cpu_29', 'cpu_30', 'cpu_31', 'cpu_32', 'cpu_33', 'cpu_34', 'cpu_35', 'cpu_36', 'cpu_37', 'cpu_38', 'cpu_39', 'cpu_40', 'cpu_41', 'cpu_42', 'cpu_43', 'cpu_44', 'cpu_45', 'cpu_46', 'cpu_47', 'cpu_48', 'cpu_49', 'cpu_50', 'cpu_51', 'cpu_52', 'cpu_53', 'cpu_54', 'cpu_55', 'cpu_56', 'cpu_57', 'cpu_58', 'cpu_59', 'cpu_60', 'cpu_61', 'cpu_62', 'cpu_63', 'cpu_64', 'cpu_65', 'cpu_66', 'cpu_67', 'cpu_68', 'cpu_69', 'cpu_70', 'cpu_71', 'cpu_72', 'cpu_73', 'cpu_74', 'cpu_75', 'cpu_76', 'cpu_77', 'cpu_78', 'cpu_79', 'cpu_80', 'cpu_81', 'cpu_82', 'cpu_83', 'cpu_84', 'cpu_85', 'cpu_86', 'cpu_87', 'cpu_88', 'cpu_89', 'cpu_90', 'cpu_91', 'cpu_92', 'cpu_93', 'cpu_94', 'cpu_95', 'cpu_96', 'cpu_97', 'mem_0', 'mem_1', 'mem_2', 'mem_3', 'mem_4', 'mem_5', 'mem_6', 'mem_7', 'mem_8', 'mem_9', 'mem_10', 'mem_11', 'mem_12', 'mem_13', 'mem_14', 'mem_15', 'mem_16', 'mem_17', 'mem_18', 'mem_19', 'mem_20', 'mem_21', 'mem_22', 'mem_23', 'mem_24', 'mem_25', 'mem_26', 'mem_27', 'mem_28', 'mem_29', 'mem_30', 'mem_31', 'mem_32', 'mem_33', 'mem_34', 'mem_35', 'mem_36', 'mem_37', 'mem_38', 'mem_39', 'mem_40', 'mem_41', 'mem_42', 'mem_43', 'mem_44', 'mem_45', 'mem_46', 'mem_47', 'mem_48', 'mem_49', 'mem_50', 'mem_51', 'mem_52', 'mem_53', 'mem_54', 'mem_55', 'mem_56', 'mem_57', 'mem_58', 'mem_59', 'mem_60', 'mem_61', 'mem_62', 'mem_63', 'mem_64', 'mem_65', 'mem_66', 'mem_67', 'mem_68', 'mem_69', 'mem_70', 'mem_71', 'mem_72', 'mem_73', 'mem_74', 'mem_75', 'mem_76', 'mem_77', 'mem_78', 'mem_79', 'mem_80', 'mem_81', 'mem_82', 'mem_83', 'mem_84', 'mem_85', 'mem_86', 'mem_87', 'mem_88', 'mem_89', 'mem_90', 'mem_91', 'mem_92', 'mem_93', 'mem_94', 'mem_95', 'mem_96', 'mem_97']
+ELEMENTS_TO_UPDATE = ['disk', 'p', 'm', 'pm', 'cpu_0', 'cpu_1', 'cpu_2', 'cpu_3', 'cpu_4', 'cpu_5', 'cpu_6', 'cpu_7',
+                      'cpu_8', 'cpu_9', 'cpu_10', 'cpu_11', 'cpu_12', 'cpu_13', 'cpu_14', 'cpu_15', 'cpu_16', 'cpu_17',
+                      'cpu_18', 'cpu_19', 'cpu_20', 'cpu_21', 'cpu_22', 'cpu_23', 'cpu_24', 'cpu_25', 'cpu_26',
+                      'cpu_27', 'cpu_28', 'cpu_29', 'cpu_30', 'cpu_31', 'cpu_32', 'cpu_33', 'cpu_34', 'cpu_35',
+                      'cpu_36', 'cpu_37', 'cpu_38', 'cpu_39', 'cpu_40', 'cpu_41', 'cpu_42', 'cpu_43', 'cpu_44',
+                      'cpu_45', 'cpu_46', 'cpu_47', 'cpu_48', 'cpu_49', 'cpu_50', 'cpu_51', 'cpu_52', 'cpu_53',
+                      'cpu_54', 'cpu_55', 'cpu_56', 'cpu_57', 'cpu_58', 'cpu_59', 'cpu_60', 'cpu_61', 'cpu_62',
+                      'cpu_63', 'cpu_64', 'cpu_65', 'cpu_66', 'cpu_67', 'cpu_68', 'cpu_69', 'cpu_70', 'cpu_71',
+                      'cpu_72', 'cpu_73', 'cpu_74', 'cpu_75', 'cpu_76', 'cpu_77', 'cpu_78', 'cpu_79', 'cpu_80',
+                      'cpu_81', 'cpu_82', 'cpu_83', 'cpu_84', 'cpu_85', 'cpu_86', 'cpu_87', 'cpu_88', 'cpu_89',
+                      'cpu_90', 'cpu_91', 'cpu_92', 'cpu_93', 'cpu_94', 'cpu_95', 'cpu_96', 'cpu_97', 'mem_0', 'mem_1',
+                      'mem_2', 'mem_3', 'mem_4', 'mem_5', 'mem_6', 'mem_7', 'mem_8', 'mem_9', 'mem_10', 'mem_11',
+                      'mem_12', 'mem_13', 'mem_14', 'mem_15', 'mem_16', 'mem_17', 'mem_18', 'mem_19', 'mem_20',
+                      'mem_21', 'mem_22', 'mem_23', 'mem_24', 'mem_25', 'mem_26', 'mem_27', 'mem_28', 'mem_29',
+                      'mem_30', 'mem_31', 'mem_32', 'mem_33', 'mem_34', 'mem_35', 'mem_36', 'mem_37', 'mem_38',
+                      'mem_39', 'mem_40', 'mem_41', 'mem_42', 'mem_43', 'mem_44', 'mem_45', 'mem_46', 'mem_47',
+                      'mem_48', 'mem_49', 'mem_50', 'mem_51', 'mem_52', 'mem_53', 'mem_54', 'mem_55', 'mem_56',
+                      'mem_57', 'mem_58', 'mem_59', 'mem_60', 'mem_61', 'mem_62', 'mem_63', 'mem_64', 'mem_65',
+                      'mem_66', 'mem_67', 'mem_68', 'mem_69', 'mem_70', 'mem_71', 'mem_72', 'mem_73', 'mem_74',
+                      'mem_75', 'mem_76', 'mem_77', 'mem_78', 'mem_79', 'mem_80', 'mem_81', 'mem_82', 'mem_83',
+                      'mem_84', 'mem_85', 'mem_86', 'mem_87', 'mem_88', 'mem_89', 'mem_90', 'mem_91', 'mem_92',
+                      'mem_93', 'mem_94', 'mem_95', 'mem_96', 'mem_97']
 NUM_OF_JOBS = 68224
 NUM_OF_LIMITED_JOBS = 9338
 CPU_SOFT_LIMIT = 0.5
-DEBUG = False
+DEBUG = True
+
 
 def debug(*msg):
     if DEBUG:
@@ -46,16 +68,16 @@ class Machine(object):
     def add_job(self, new_job, only_use_new_machine=False):
         if not new_job.check_interference(self):
             return False
-        # if not new_job.assigned_machine_id:
-        #     print("Failed job: " + str(new_job))
-        #     return False
+            # if not new_job.assigned_machine_id:
+            #     print("Failed job: " + str(new_job))
+            #     return False
             # raise Exception("This job has already been prescheduled! " + str(new_job))
-        #check if resource constraints valid
+        # check if resource constraints valid
         for k in ELEMENTS_TO_UPDATE:
             machine_k = getattr(self, k)
             job_k = getattr(new_job, k)
             machine_k_capacity = self.original_dict[k]
-            if only_use_new_machine and not self.jobs:
+            if only_use_new_machine and self.jobs:
                 debug('New machine requested but this is not a new machine')
                 return False
             if 'cpu' in k and job_k > CPU_SOFT_LIMIT * machine_k_capacity:
@@ -69,7 +91,7 @@ class Machine(object):
         for k in ELEMENTS_TO_UPDATE:
             machine_k = getattr(self, k)
             job_k = getattr(new_job, k)
-            setattr(self, k, machine_k - job_k )
+            setattr(self, k, machine_k - job_k)
         self.jobs.append(new_job)
         if new_job.app_id in self.apps:
             self.apps[new_job.app_id] += 1
@@ -78,11 +100,12 @@ class Machine(object):
         debug('new job', new_job)
         return True
 
+
 class Job(object):
-    def __init__(self,d, interference_dict):
+    def __init__(self, d, interference_dict):
         self.__dict__ = d
         self.max_cpu = 0
-        for k,v in d.items():
+        for k, v in d.items():
             if "cpu" in k:
                 self.max_cpu = max(self.max_cpu, v)
         # self.assigned_machine_id = None
@@ -95,7 +118,7 @@ class Job(object):
             cnt_new_app_id = 1
         for job in machine.jobs:
             interference = job.interference
-            for k,v in interference.items():
+            for k, v in interference.items():
                 if k == self.app_id and v < cnt_new_app_id:
                     return False
         return True
@@ -106,16 +129,20 @@ class Job(object):
     def __repr__(self):
         return str(self.__dict__)
 
-def get_csv(short_name, header_lst = None):
+
+def get_csv(short_name, header_lst=None):
     loc = list(filter(lambda x: "csv" in x and short_name in x, os.listdir(DATA_FOLDER)))[0]
     full_loc = os.path.join(os.getcwd(), DATA_FOLDER, loc)
     print("For ", short_name, " Using file at: ", full_loc)
-    res = pd.read_csv(full_loc,names=header_lst)
+    res = pd.read_csv(full_loc, names=header_lst)
     return res
+
 
 def pipe_separated_values_into_multiple_cols(df, prefix, original_col_name):
     return pd.concat([df.drop(original_col_name, axis=1),
-               df[original_col_name].str.split("|", expand=True).applymap(lambda x: float(x)).rename(columns=lambda x: prefix + str(x))], axis=1)
+                      df[original_col_name].str.split("|", expand=True).applymap(lambda x: float(x)).rename(
+                          columns=lambda x: prefix + str(x))], axis=1)
+
 
 def data_parsing_main():
     # instance_id, app_id, id_of_machine this instance is running on
@@ -123,9 +150,12 @@ def data_parsing_main():
     # app id 1, app id 2, maximum # of instances of app id 2 that can be on same machine as at least one instance of app id 1
     interference = get_csv("interference", header_lst=["app_id1", "app_id2", "max_app2"])
     # machine id, cpu capacity, memory capacity, disk capacity, P capacity, M capacity, PM capacity
-    machine_resources = get_csv("machine_resources", header_lst=["machine_id", "cpu_capacity", "mem_capacity", "disk_capacity", "p_capacity", "m_capacity", "pm_capacity"])
+    machine_resources = get_csv("machine_resources",
+                                header_lst=["machine_id", "cpu_capacity", "mem_capacity", "disk_capacity", "p_capacity",
+                                            "m_capacity", "pm_capacity"])
     # app_id, CPU curve, memory curve, disk req, P resource req, M resource req, PM resource req
-    raw_app_resources_1 = get_csv("app_resources", header_lst=["app_id","cpu_curve", "mem_curve", "disk", "p", "m", "pm"])
+    raw_app_resources_1 = get_csv("app_resources",
+                                  header_lst=["app_id", "cpu_curve", "mem_curve", "disk", "p", "m", "pm"])
     raw_app_resources_2 = pipe_separated_values_into_multiple_cols(raw_app_resources_1, "cpu_", "cpu_curve")
     app_resources = pipe_separated_values_into_multiple_cols(raw_app_resources_2, "mem_", "mem_curve")
 
@@ -137,12 +167,12 @@ def data_parsing_main():
         if row_appid2 in job_limits:
             job_limits[row_appid2][row_appid1] = cap
         else:
-            job_limits[row_appid2] = {row_appid1:cap}
+            job_limits[row_appid2] = {row_appid1: cap}
     print(job_limits["app_7845"])
     # check job limit count
     print("LENGTH OF JOB LIMITS ", len(job_limits.keys()))
     print(job_limits)
-    assert(len(job_limits.keys()) == NUM_OF_LIMITED_JOBS)
+    assert (len(job_limits.keys()) == NUM_OF_LIMITED_JOBS)
 
     print(jobs.columns)
     print(app_resources.columns)
@@ -158,9 +188,8 @@ def data_parsing_main():
         jobs_with_resources_dict[row["inst_id"]] = row
         job_objects_lst.append(Job(row, job_limits[row["app_id"]]))
     print(jobs_with_resources_dict["inst_11900"])
-    #check job count
-    assert(len(jobs_with_resources_dict) == NUM_OF_JOBS)
-
+    # check job count
+    assert (len(jobs_with_resources_dict) == NUM_OF_JOBS)
 
     machine_dict = {}
     machine_objects_lst = []
