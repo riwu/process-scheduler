@@ -42,6 +42,7 @@ ELEMENTS_TO_UPDATE = ['disk', 'p', 'm', 'pm', 'cpu_0', 'cpu_1', 'cpu_2', 'cpu_3'
 NUM_OF_JOBS = 68224
 NUM_OF_LIMITED_JOBS = 9338
 CPU_SOFT_LIMIT = 0.5
+CSV_FILE = "scheduling_instance_deploy10k.csv"
 DEBUG = False
 
 
@@ -140,8 +141,11 @@ class Job(object):
         return str(self.__dict__)
 
 
-def get_csv(short_name, header_lst=None):
-    loc = list(filter(lambda x: "csv" in x and short_name in x, os.listdir(DATA_FOLDER)))[0]
+def get_csv(short_name, header_lst=None, known_short_name = None):
+    if known_short_name:
+        loc = known_short_name
+    else:
+        loc = list(filter(lambda x: "csv" in x and short_name in x, os.listdir(DATA_FOLDER)))[0]
     full_loc = os.path.join(os.getcwd(), DATA_FOLDER, loc)
     print("For ", short_name, " Using file at: ", full_loc)
     res = pd.read_csv(full_loc, names=header_lst)
@@ -156,7 +160,7 @@ def pipe_separated_values_into_multiple_cols(df, prefix, original_col_name):
 
 def data_parsing_main():
     # instance_id, app_id, id_of_machine this instance is running on
-    jobs = get_csv("instance", header_lst=["inst_id", "app_id", "machine_id"])
+    jobs = get_csv(CSV_FILE, header_lst=["inst_id", "app_id", "machine_id"])
     # app id 1, app id 2, maximum # of instances of app id 2 that can be on same machine as at least one instance of app id 1
     interference = get_csv("interference", header_lst=["app_id1", "app_id2", "max_app2"])
     # machine id, cpu capacity, memory capacity, disk capacity, P capacity, M capacity, PM capacity
