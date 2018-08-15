@@ -11,15 +11,31 @@ jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst = d
 lowest_cost = None
 
 machine_objects_lst.reverse()
+big_machine_cpu = machine_objects_lst[0].cpu_0
+small_machine_cpu = machine_objects_lst[-1].cpu_0
+
+def add_to_machine(job):
+    for machine in machine_objects_lst:
+        if machine.add_job(job):
+            return
+
+def allocate_jobs_to_new_machine(jobs, cpu):
+    for i, job in enumerate(jobs):
+        if job.max_cpu >= cpu:
+            job_objects_lst_copy.pop(i)
+            add_to_machine(job, True)
 
 def random_algo():
-    random.shuffle(job_objects_lst)
+    job_objects_lst_copy = list(job_objects_lst)
+    random.shuffle(job_objects_lst_copy)
 
-    for i, job in enumerate(job_objects_lst):
-        print('i', i)
-        for machine in machine_objects_lst:
-            if machine.add_job(job):
-                break
+    allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.2)
+    allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.5)
+
+    for i, job in enumerate(job_objects_lst_copy):
+        if DEBUG:
+            print('i', i)
+        add_to_machine(job)
 
 
 while True:
