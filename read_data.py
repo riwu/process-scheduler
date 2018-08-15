@@ -115,22 +115,21 @@ class Job(object):
         self.interference = interference_dict
 
     def check_interference(self, machine):
-        if self.app_id in machine.apps:
-            cnt_new_app_id = machine.apps[self.app_id] + 1
-        else:
-            cnt_new_app_id = 1
+        cnt_new_app_id = machine.apps.get(self.app_id, 0) + 1
 
         for job in machine.jobs:
             interference = job.interference
-            for k, v in interference.items():
-                if k == self.app_id and v < cnt_new_app_id:
-                    debug('interfered')
-                    return False
+            if cnt_new_app_id > interference.get(self.app_id, 0):
+                return False
 
-            for k, v in self.interference.items():
-                if k == job.app_id and v < machine.apps.get(job.app_id, 0) + 1:
-                    debug('interfered2')
-                    return False
+
+            if machine.apps.get(job.app_id) > self.interference.get(job.app_id, 0):
+                return False
+
+            # for k, v in self.interference.items():
+            #     if k == job.app_id and v < machine.apps.get(job.app_id, 0) + 1:
+            #         debug('interfered2')
+            #         return False
 
         return True
 
