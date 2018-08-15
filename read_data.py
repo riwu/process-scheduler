@@ -78,6 +78,10 @@ class Machine(object):
 class Job(object):
     def __init__(self,d, interference_dict):
         self.__dict__ = d
+        self.max_cpu = 0
+        for k,v in d.items():
+            if "cpu" in k:
+                max_cpu = max(max_cpu, v)
         # self.assigned_machine_id = None
         self.interference = interference_dict
 
@@ -93,7 +97,9 @@ class Job(object):
                     return False
         return True
 
-
+    def get_max_cpu(self):
+        return self.max_cpu
+    
     def __repr__(self):
         return str(self.__dict__)
 
