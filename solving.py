@@ -26,8 +26,8 @@ def add_to_machine(job, only_use_new_machine=False):
     raise Exception('Out of machines!')
 
 
+
 def allocate_jobs_to_new_machine(jobs, cpu, prefix_str):
-    global count
     left_over_jobs = []
     for i, job in enumerate(jobs):
         if job.max_cpu >= cpu:
@@ -36,7 +36,7 @@ def allocate_jobs_to_new_machine(jobs, cpu, prefix_str):
             print(prefix_str + " " + str(i))
         else:
             left_over_jobs.append(job)
-    print('left over', left_over_jobs)
+    print('left over', len(left_over_jobs))
     return left_over_jobs
 
 
