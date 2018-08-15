@@ -14,26 +14,26 @@ machine_objects_lst.reverse()
 big_machine_cpu = machine_objects_lst[0].cpu_0
 small_machine_cpu = machine_objects_lst[-1].cpu_0
 
-# for i, job in enumerate(job_objects_lst):
-#     if job.get_max_cpu() == 0:
-
 def add_to_machine(job, only_use_new_machine = False):
     for machine in machine_objects_lst:
         if machine.add_job(job, only_use_new_machine):
             return
 
 def allocate_jobs_to_new_machine(jobs, cpu):
-    for i, job in enumerate(list(jobs)):
+    left_over_jobs = []
+    for i, job in enumerate(jobs):
         if job.max_cpu >= cpu:
-            jobs.pop(i)
             add_to_machine(job, True)
+        else:
+            left_over_jobs.append(job)
+    return  left_over_jobs
 
 def random_algo():
     job_objects_lst_copy = list(job_objects_lst)
     random.shuffle(job_objects_lst_copy)
 
-    allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.2)
-    allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.5)
+    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.2)
+    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.5)
 
     for i, job in enumerate(job_objects_lst_copy):
         debug('i', i)

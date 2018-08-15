@@ -84,7 +84,7 @@ class Job(object):
         self.max_cpu = 0
         for k,v in d.items():
             if "cpu" in k:
-                max_cpu = max(max_cpu, v)
+                self.max_cpu = max(self.max_cpu, v)
         # self.assigned_machine_id = None
         self.interference = interference_dict
 
