@@ -15,7 +15,7 @@ from collections import defaultdict
 import copy
 
 pd.set_option('display.max_columns', None)
-DATA_FOLDER = "scheduling_data_files"
+DATA_FOLDER = "Judge"
 DURATION = 98
 ELEMENTS_TO_UPDATE = ['disk', 'p', 'm', 'pm', 'cpu_0', 'cpu_1', 'cpu_2', 'cpu_3', 'cpu_4', 'cpu_5', 'cpu_6', 'cpu_7',
                       'cpu_8', 'cpu_9', 'cpu_10', 'cpu_11', 'cpu_12', 'cpu_13', 'cpu_14', 'cpu_15', 'cpu_16', 'cpu_17',
