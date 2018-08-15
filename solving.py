@@ -18,6 +18,8 @@ def add_to_machine(job, only_use_new_machine = False):
     for machine in machine_objects_lst:
         if machine.add_job(job, only_use_new_machine):
             return
+    raise Exception('Out of machines!')
+
 
 def allocate_jobs_to_new_machine(jobs, cpu):
     left_over_jobs = []
@@ -48,12 +50,12 @@ while True:
         lowest_cost = cost
 
         with open('output.csv', 'w') as csvfile:
-            spamwriter = csv.writer(csvfile)
+            csv_writer = csv.writer(csvfile)
 
             for machine in machine_objects_lst:
                 for job in machine.jobs:
                     debug(job.inst_id + ', ' + machine.machine_id)
-                    spamwriter.writerow(job.inst_id + ', ' + machine.machine_id)
+                    csv_writer.writerow(job.inst_id + ', ' + machine.machine_id)
 
     for machine in machine_objects_lst:
         machine.reset()
