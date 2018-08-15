@@ -41,7 +41,7 @@ ELEMENTS_TO_UPDATE = ['disk', 'p', 'm', 'pm', 'cpu_0', 'cpu_1', 'cpu_2', 'cpu_3'
                       'mem_93', 'mem_94', 'mem_95', 'mem_96', 'mem_97']
 NUM_OF_JOBS = 68224
 NUM_OF_LIMITED_JOBS = 9338
-CPU_SOFT_LIMIT = 0.5
+CPU_SOFT_LIMIT = 1
 CSV_FILE = "scheduling_instance_deploy10k.csv"
 DEBUG = False
 

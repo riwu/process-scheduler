@@ -17,6 +17,12 @@ machine_objects_lst.reverse()
 big_machine_cpu = machine_objects_lst[0].cpu_0
 small_machine_cpu = machine_objects_lst[-1].cpu_0
 
+for i, job in enumerate(job_objects_lst):
+    for j, machine in enumerate(machine_objects_lst):
+        if job.machine_id == machine.machine_id:
+            machine.add_job(job)
+
+
 def debug_progress(*args):
     if DEBUG_PROGRESS:
         print(*args)
