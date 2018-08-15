@@ -6,6 +6,8 @@ import random
 import csv
 from checker import compute_cost
 
+DEBUG_PROGRESS = False
+
 jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst = data_parsing_main()
 
 lowest_cost = None
@@ -14,6 +16,9 @@ machine_objects_lst.reverse()
 big_machine_cpu = machine_objects_lst[0].cpu_0
 small_machine_cpu = machine_objects_lst[-1].cpu_0
 
+def debug_progress(*args):
+    if DEBUG_PROGRESS:
+        print(*args)
 
 def add_to_machine(job, only_use_new_machine=False):
     for i, machine in enumerate(machine_objects_lst):
@@ -36,7 +41,7 @@ def allocate_jobs_to_new_machine(jobs, cpu, prefix_str):
             print(prefix_str + " " + str(i))
         else:
             left_over_jobs.append(job)
-    print('left over', len(left_over_jobs))
+    debug('left over', len(left_over_jobs))
     return left_over_jobs
 
 
@@ -46,11 +51,11 @@ def random_algo():
 
 
     job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.2, "BIG ")
-    print('big jobs done')
+    debug_progress('big jobs done')
     job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.4, "MEDIUM ")
-    print('medium jobs')
+    debug_progress('medium jobs')
     for i, job in enumerate(job_objects_lst_copy):
-        print('small ', i)
+        debug_progress('small ', i)
         add_to_machine(job)
 
 
