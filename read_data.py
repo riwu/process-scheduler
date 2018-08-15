@@ -87,9 +87,9 @@ def data_parsing_main():
             job_limits[row_appid2] = {row_appid1:cap}
     print(job_limits["app_7845"])
     # check job limit count
-    print("LENGTH OF JOB LIMITS ", sum(len(v) for v in job_limits.keys()))
+    print("LENGTH OF JOB LIMITS ", len(job_limits.keys()))
     print(job_limits)
-    assert(sum(len(v) for v in job_limits.values()) == NUM_OF_LIMITED_JOBS)
+    assert(len(job_limits.keys()) == NUM_OF_LIMITED_JOBS)
 
     print(jobs.columns)
     print(app_resources.columns)
@@ -101,7 +101,7 @@ def data_parsing_main():
         job_objects_lst.append(Job(row, job_limits[row["inst_id"]]))
     print(jobs_with_resources_dict["inst_11900"])
     #check job count
-    assert(len(jobs_with_resources_dict) == 68219)
+    assert(len(jobs_with_resources_dict) == NUM_OF_JOBS)
 
 
     machine_dict = {}
