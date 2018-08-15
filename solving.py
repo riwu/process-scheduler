@@ -72,12 +72,10 @@ while True:
 
             for machine in machine_objects_lst:
                 for job in machine.jobs:
-                    debug(job.inst_id + ', ' + machine.machine_id)
-                    csv_writer.writerow(job.inst_id + ', ' + machine.machine_id)
+                    debug(job.inst_id + ',' + machine.machine_id)
+                    csv_writer.writerow([job.inst_id, machine.machine_id])
 
     for machine in machine_objects_lst:
         machine.reset()
 
     print('cost', cost, lowest_cost, file_name)
-    break
-
