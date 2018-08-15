@@ -38,7 +38,7 @@ class Machine(object):
         self.jobs = []
         self.apps = {}
 
-    def add_job(self, new_job, override_cpu_soft_limit=False):
+    def add_job(self, new_job, only_use_new_machine=False):
         if not new_job.check_interference(self):
             return False
         # if not new_job.assigned_machine_id:
@@ -50,11 +50,12 @@ class Machine(object):
             machine_k = getattr(self, k)
             job_k = getattr(new_job, k)
             machine_k_capacity = self.original_dict[k]
-            if not override_cpu_soft_limit and 'cpu' in k and job_k > CPU_SOFT_LIMIT * machine_k_capacity:
+            if only_use_new_machine and not self.jobs:
                 if DEBUG:
-                    print('Soft cpu constraint')
+                    print('New machine requested but this is not a new machine')
                 return False
-
+            if 'cpu' in k and job_k > CPU_SOFT_LIMIT * machine_k_capacity:
+                return False
             if machine_k - job_k < 0:
                 if DEBUG:
                     print('resource constraint')
@@ -99,7 +100,7 @@ class Job(object):
 
     def get_max_cpu(self):
         return self.max_cpu
-    
+
     def __repr__(self):
         return str(self.__dict__)
 
