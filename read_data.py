@@ -81,7 +81,7 @@ class Machine(object):
             if only_use_new_machine and self.jobs:
                 debug('New machine requested but this is not a new machine', only_use_new_machine, self.jobs)
                 return False
-            if 'cpu' in k and job_k > CPU_SOFT_LIMIT * machine_k_capacity:
+            if not only_use_new_machine and 'cpu' in k and job_k > CPU_SOFT_LIMIT * machine_k_capacity:
                 debug('cpu constraint', job_k, CPU_SOFT_LIMIT * machine_k_capacity)
                 return False
             if machine_k - job_k < 0:

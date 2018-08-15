@@ -16,12 +16,12 @@ small_machine_cpu = machine_objects_lst[-1].cpu_0
 
 
 def add_to_machine(job, only_use_new_machine=False):
-    for machine in machine_objects_lst:
-        print('machine', machine.jobs)
+    for i, machine in enumerate(machine_objects_lst):
+        debug('machine', i, machine.cpu_0)
         if machine.add_job(job, only_use_new_machine):
             return
         else:
-            print('machine not ok')
+            debug('machine not ok')
     print('job', job)
     raise Exception('Out of machines!')
 
@@ -32,7 +32,7 @@ def allocate_jobs_to_new_machine(jobs, cpu):
     left_over_jobs = []
     for i, job in enumerate(jobs):
         if job.max_cpu >= cpu:
-            print('job high', job.max_cpu, count, i)
+            debug('job high', job.max_cpu, count, i)
             count += 1
             add_to_machine(job, True)
         else:
@@ -45,9 +45,9 @@ def random_algo():
     random.shuffle(job_objects_lst_copy)
 
     job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.3)
-    print('big jobs done')
+    debug('big jobs done')
     job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.5)
-    print('medium jobs')
+    debug('medium jobs')
 
     for i, job in enumerate(job_objects_lst_copy):
         debug('i', i)
