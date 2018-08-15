@@ -10,7 +10,7 @@ def cost_function(cpu):
 def score_machine(machine):
     machine_cost = 0
     for i in range(DURATION):
-        cpu = getattr(machine, "CPU_"+i)
+        cpu = getattr(machine, "cpu_"+str(i))
         machine_cost += cost_function(cpu)
     return machine_cost
 

@@ -4,10 +4,11 @@
 from read_data import data_parsing_main
 import random
 import csv
+from checker import compute_cost
 
 jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst = data_parsing_main()
 
-highest_score = 0
+lowest_cost = None
 
 machine_objects_lst.reverse()
 
@@ -20,18 +21,23 @@ while True:
             if machine.add_job(job):
                 break
 
-    # score = compute_cost(machine_objects_lst)
 
+    cost = compute_cost(machine_objects_lst)
+    if lowest_cost == None or cost < lowest_cost:
+        lowest_cost = cost
 
-    with open('output.csv', 'w') as csvfile:
-        spamwriter = csv.writer(csvfile)
+        with open('output.csv', 'w') as csvfile:
+            spamwriter = csv.writer(csvfile)
 
-        for machine in machine_objects_lst:
-            if machine.jobs:
-                print('jobs', len(machine.jobs))
-            for job in machine.jobs:
-                print(job.inst_id + ', ' + machine.machine_id)
-                spamwriter.writerow(job.inst_id + ', ' + machine.machine_id)
+            for machine in machine_objects_lst:
+                if machine.jobs:
+                    print('jobs', len(machine.jobs))
+                for job in machine.jobs:
+                    print(job.inst_id + ', ' + machine.machine_id)
+                    spamwriter.writerow(job.inst_id + ', ' + machine.machine_id)
+
+    for machine in machine_objects_lst:
+        machine.reset()
 
     break
 
