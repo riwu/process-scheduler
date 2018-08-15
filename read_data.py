@@ -41,22 +41,25 @@ class Machine(object):
         for k in ELEMENTS_TO_UPDATE:
             machine_k = getattr(self, k)
             job_k = getattr(new_job, k)
-            if machine_k - job_k < 0:
+            if 'cpu' in k and machine_k - job_k < 0.5:
+                print('cpu constraint')
                 return False
+            if machine_k - job_k < 0:
+                print('resource constraint')
+                return False
+
                 # raise Exception("Attempting to use more than 100% of resource " + k + " .Current Machine State: " + self + " . New job state: " + new_job)
         # actually start mutating
         for k in ELEMENTS_TO_UPDATE:
             machine_k = getattr(self, k)
             job_k = getattr(new_job, k)
-            if machine_k - job_k < 0:
-                return False
-                # raise Exception("Attempting to use more than 100% of resource " + k + " .Current Machine State: " + self + " . New job state: " + new_job)
             setattr(self, k, machine_k - job_k )
         self.jobs.append(new_job)
         if new_job.app_id in self.apps:
             self.apps[new_job.app_id] += 1
         else:
             self.apps[new_job.app_id] = 1
+        print('new job', new_job)
         return True
 
 class Job(object):
@@ -74,6 +77,7 @@ class Job(object):
             interference = job.interference
             for k,v in interference:
                 if k == self.app_id and v < cnt_new_app_id:
+                    print('int fail', v, cnt_new_app_id)
                     return False
         return True
 
