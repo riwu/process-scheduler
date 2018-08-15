@@ -54,7 +54,7 @@ def allocate_jobs_to_new_machine(jobs, cpu, prefix_str):
 
 def random_algo():
     job_objects_lst_copy = list(job_objects_lst)
-    random.shuffle(job_objects_lst_copy)
+    # random.shuffle(job_objects_lst_copy)
 
 
     job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.2, "BIG ")
@@ -69,7 +69,7 @@ def random_algo():
 while True:
     random_algo()
     timestamp = '' # str(time.time()).replace('.', '')
-    file_name = 'Judge/output' + timestamp + '.csv'
+    file_name = 'Judge/outputSample' + '.csv'
     cost = compute_cost(machine_objects_lst)
     if lowest_cost == None or cost < lowest_cost:
         lowest_cost = cost
@@ -86,3 +86,4 @@ while True:
         machine.reset()
 
     print('cost', cost, lowest_cost, file_name)
+    break
