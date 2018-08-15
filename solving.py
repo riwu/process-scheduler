@@ -6,6 +6,7 @@ import random
 import csv
 from checker import compute_cost
 import time
+import pprint
 
 DEBUG_PROGRESS = False
 
@@ -82,6 +83,10 @@ while True:
                     debug(job.inst_id + ',' + machine.machine_id)
                     csv_writer.writerow([job.inst_id, machine.machine_id])
 
+    # DEBUGGING
+    pprint.pprint(jobs_with_resources_dict["inst_37090"])
+    pprint.pprint(machine_dict["machine_5995"])
+    # DEBUGGING
     for machine in machine_objects_lst:
         machine.reset()
 
