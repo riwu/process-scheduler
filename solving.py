@@ -5,6 +5,7 @@ from read_data import data_parsing_main, debug
 import random
 import csv
 from checker import compute_cost
+import time
 
 DEBUG_PROGRESS = False
 
@@ -61,12 +62,12 @@ def random_algo():
 
 while True:
     random_algo()
-
+    file_name = 'output' + str(time.time()).replace('.', '') + '.csv'
     cost = compute_cost(machine_objects_lst)
     if lowest_cost == None or cost < lowest_cost:
         lowest_cost = cost
 
-        with open('output.csv', 'w') as csvfile:
+        with open(file_name, 'w') as csvfile:
             csv_writer = csv.writer(csvfile)
 
             for machine in machine_objects_lst:
@@ -77,5 +78,6 @@ while True:
     for machine in machine_objects_lst:
         machine.reset()
 
-    print('cost', cost, lowest_cost)
+    print('cost', cost, lowest_cost, file_name)
     break
+
