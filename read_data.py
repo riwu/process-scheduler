@@ -105,9 +105,11 @@ class Machine(object):
         return True
 
     def remove_job(self, inst_id):
-        for j in self.jobs:
+        for j_index, j in enumerate(self.jobs):
             if j.inst_id == inst_id:
                 job_to_remove = j
+                job_to_remove_index = j_index
+        self.jobs.pop(job_to_remove_index)
         self.apps[job_to_remove.app_id] -= 1
         for k in ELEMENTS_TO_UPDATE:
             machine_k = getattr(self, k)
