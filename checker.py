@@ -3,6 +3,7 @@ from read_data import DURATION
 import subprocess
 import os
 import re
+from read_data import debug
 ALPHA = 10
 BETA = 0.5
 
@@ -10,12 +11,14 @@ BETA = 0.5
 def run_bash_command(bash_command):
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
-    decoded_output = output[output.rfind('?'):].decode("utf_8")
-    print('raw output', output)
-    print('decoded output', decoded_output)
-    output_utf = re.findall("\d+\.\d+E?\d?", decoded_output)[0]
-    print('float output: ', output_utf)
+    decoded_output = output.decode("utf_8")
+    dirty_score = decoded_output[decoded_output.rfind('选手所得分数为：'):]
+    debug('raw output', output)
+    debug('decoded output', decoded_output)
+    output_utf = re.findall("\d+\.\d+E?\d?", dirty_score)[0]
+
     score = float(output_utf)
+    debug('float output: ', score)
     return score
 
 def get_alibaba_score(instance_deploy_file, output_file ):
@@ -33,10 +36,12 @@ def cost_function(cpu):
 
 def score_machine(machine):
     machine_cost = 0
+    if len(machine.jobs) == 0:
+        return 0
     for i in range(DURATION):
         cpu = 1 - getattr(machine, "cpu_"+str(i))/machine.original_dict["cpu_"+str(i)]
         machine_cost += cost_function(cpu)
-    return machine_cost
+    return machine_cost/DURATION
 
 def compute_cost(lst_of_machine_objects):
     cost = 0

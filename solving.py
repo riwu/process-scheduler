@@ -104,7 +104,11 @@ while True:
         #             debug(job.inst_id + ',' + machine.machine_id)
         #             csv_writer.writerow([job.inst_id, machine.machine_id])
 
+    print('cost', cost, output_csv, lowest_cost, file_name)
+    print("our computed score: ", compute_cost(machine_objects_lst))
+    print("_________________________")
+
     for machine in machine_objects_lst:
         machine.reset()
 
-    print('cost', cost, output_csv, lowest_cost, file_name)
+
