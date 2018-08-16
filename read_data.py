@@ -16,7 +16,6 @@ import copy
 
 NUM_OF_JOBS = 68224
 NUM_OF_LIMITED_JOBS = 9338
-CPU_SOFT_LIMIT = 1
 CSV_FILE = "scheduling_instance_deploy.csv"
 DEBUG = False
 pd.set_option('display.max_columns', None)
@@ -67,7 +66,7 @@ class Machine(object):
         self.jobs = []
         self.apps = {}
 
-    def add_job(self, new_job, only_use_new_machine=False, initialisation=False):
+    def add_job(self, new_job, only_use_new_machine=False, initialisation=False, cpu_limit = 1):
         if not initialisation:
             if not new_job.check_interference(self):
                 debug('Interference detected')
@@ -84,8 +83,8 @@ class Machine(object):
                 if only_use_new_machine and self.jobs:
                     debug('New machine requested but this is not a new machine', only_use_new_machine, self.jobs)
                     return False
-                if not only_use_new_machine and 'cpu' in k and job_k > CPU_SOFT_LIMIT * machine_k_capacity:
-                    debug('cpu constraint', job_k, CPU_SOFT_LIMIT * machine_k_capacity)
+                if not only_use_new_machine and 'cpu' in k and job_k > cpu_limit * machine_k_capacity:
+                    debug('cpu constraint', job_k, cpu_limit * machine_k_capacity)
                     return False
                 if machine_k - job_k < 0:
                     debug('resource constraint')

@@ -15,16 +15,23 @@ def debug_progress(*args):
     if DEBUG_PROGRESS:
         print(*args)
 
-def add_to_machine(job, csv_writer, only_use_new_machine=False):
+def add_to_machine_for_cpu_limit(job, csv_writer, only_use_new_machine=False, cpu_limit = 1):
     for i, machine in enumerate(machine_objects_lst):
         debug('machine', i, machine.cpu_0)
-        if machine.add_job(job, only_use_new_machine):
+        if machine.add_job(job, only_use_new_machine, False, cpu_limit):
             csv_writer.writerow([job.inst_id, machine.machine_id])
-            return
+            return True
         else:
             debug('machine not ok')
-    print('out of machines job', job)
+    debug('out of machines job', job)
+
+def add_to_machine(job, csv_writer, only_use_new_machine=False):
+    cpu_limits = [0.5, 1]
+    for cpu_limit in cpu_limits:
+        if add_to_machine_for_cpu_limit(job, csv_writer, only_use_new_machine, cpu_limit):
+            return
     raise Exception('Out of machines!')
+
 
 def fix_initial_allocation(machine_objects_lst, csv_writer):
     for m, machine in enumerate(machine_objects_lst):
@@ -91,7 +98,10 @@ while True:
 
         fix_initial_allocation(machine_objects_lst, csv_writer)
         debug_progress('remaining jobs', len(remaining_jobs))
-        random_algo(csv_writer)
+        try:
+            random_algo(csv_writer)
+        except:
+            pass
 
     cost = get_alibaba_score(DATA_FOLDER + "/" + CSV_FILE, output_csv)
     if lowest_cost == None or cost < lowest_cost:
@@ -111,5 +121,7 @@ while True:
 
     for machine in machine_objects_lst:
         machine.reset()
+
+    break
 
 

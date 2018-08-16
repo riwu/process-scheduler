@@ -15,7 +15,11 @@ def run_bash_command(bash_command):
     dirty_score = decoded_output[decoded_output.rfind('选手所得分数为：'):]
     debug('raw output', output)
     debug('decoded output', decoded_output)
-    output_utf = re.findall("\d+\.\d+E?\d?", dirty_score)[0]
+    output_utf = re.findall("\d+\.\d+E?\d?", dirty_score)
+    if output_utf:
+        output_utf = output_utf[0]
+    else:
+        output_utf = re.findall("\d+\.\d+E?\d?", decoded_output)[0]
 
     score = float(output_utf)
     debug('float output: ', score)
