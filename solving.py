@@ -60,7 +60,7 @@ def allocate_jobs_to_new_machine(jobs, cpu, prefix_str, csv_writer):
 
 def random_algo(csv_writer):
     job_objects_lst_copy = list(remaining_jobs)
-    # random.shuffle(job_objects_lst_copy)
+    random.shuffle(job_objects_lst_copy)
 
     job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.4, "BIG ", csv_writer)
     debug_progress('big jobs done')
@@ -117,6 +117,7 @@ while True:
 
     print('cost', cost, output_csv, lowest_cost, file_name)
     print("our computed score: ", compute_cost(machine_objects_lst))
+    print("The file we output is ", CSV_FILE)
     print("_________________________")
 
     for machine in machine_objects_lst:
