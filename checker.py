@@ -10,7 +10,7 @@ BETA = 0.5
 def run_bash_command(bash_command):
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
-    decoded_output = output.decode("utf_8")
+    decoded_output = output[output.rfind('?'):].decode("utf_8")
     print('raw output', output)
     print('decoded output', decoded_output)
     output_utf = re.findall("\d+\.\d+E?\d?", decoded_output)[0]
