@@ -38,7 +38,6 @@ def fix_initial_allocation(machine_objects_lst, csv_writer):
 
     for i, machine in enumerate(machine_objects_lst):
         print('fixing machine', i)
-
         if score_machine(machine) > REALLOCATION_THRESHOLD:
             cnt += 1
             for i, job in list(enumerate(machine.jobs)):
@@ -119,6 +118,7 @@ while True:
 
     print('cost', cost, output_csv, lowest_cost, file_name)
     print("our computed score: ", compute_cost(machine_objects_lst))
+    print("The file we output is ", CSV_FILE)
     print("_________________________")
 
     for machine in machine_objects_lst:
