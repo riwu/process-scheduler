@@ -126,5 +126,3 @@ while True:
 
     for machine in machine_objects_lst:
         machine.reset()
-
-    break
