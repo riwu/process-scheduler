@@ -8,8 +8,8 @@ from checker import compute_cost, get_alibaba_score,score_machine
 import time
 import pprint
 
-DEBUG_PROGRESS = True
-COST_TO_REALLOCATE = 1.5
+DEBUG_PROGRESS = False
+REALLOCATION_THRESHOLD = 1.0
 
 def debug_progress(*args):
     if DEBUG_PROGRESS:
@@ -34,15 +34,16 @@ def add_to_machine(job, csv_writer, only_use_new_machine=False):
 
 
 def fix_initial_allocation(machine_objects_lst, csv_writer):
-    for m, machine in enumerate(machine_objects_lst):
+    for i, machine in enumerate(machine_objects_lst):
         # print('m', m)
         cnt = 0
-        if score_machine(machine) > COST_TO_REALLOCATE:
+
+        if score_machine(machine) > REALLOCATION_THRESHOLD:
             cnt += 1
             for i, job in list(enumerate(machine.jobs)):
                 machine.remove_job(job.inst_id)
                 add_to_machine(job, csv_writer)
-    debug_progress("Num of jobs fixed: ", cnt)
+    print("Num of machines fixed: ", cnt)
     print('done reallocating')
 
 def allocate_jobs_to_new_machine(jobs, cpu, prefix_str, csv_writer):
@@ -96,6 +97,9 @@ while True:
             if not job_added:
                 remaining_jobs.append(job)
 
+        for m in machine_objects_lst:
+            if score_machine(m) > 1:
+                print("BIGGER THAN 1")
         fix_initial_allocation(machine_objects_lst, csv_writer)
         debug_progress('remaining jobs', len(remaining_jobs))
         try:

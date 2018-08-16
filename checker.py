@@ -45,7 +45,7 @@ def score_machine(machine):
     for i in range(DURATION):
         cpu = 1 - getattr(machine, "cpu_"+str(i))/machine.original_dict["cpu_"+str(i)]
         machine_cost += cost_function(cpu)
-    return machine_cost/DURATION
+    return float(machine_cost/DURATION)
 
 def compute_cost(lst_of_machine_objects):
     cost = 0
