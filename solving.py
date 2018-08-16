@@ -37,7 +37,7 @@ def fix_initial_allocation(machine_objects_lst, csv_writer):
     cnt = 0
 
     for i, machine in enumerate(machine_objects_lst):
-        # print('m', m)
+        print('fixing machine', i)
 
         if score_machine(machine) > REALLOCATION_THRESHOLD:
             cnt += 1
@@ -98,9 +98,6 @@ while True:
             if not job_added:
                 remaining_jobs.append(job)
 
-        for m in machine_objects_lst:
-            if score_machine(m) > 1:
-                print("BIGGER THAN 1")
         debug_progress('remaining jobs', len(remaining_jobs))
         try:
             random_algo(csv_writer)
