@@ -85,7 +85,7 @@ lowest_cost = None
 file_name = None
 
 while True:
-    timestamp = ''  # str(time.time()).replace('.', '')
+    timestamp = str(time.time()).replace('.', '')
     output_csv = 'Judge/outputSample' + timestamp + '.csv'
 
     with open(output_csv, 'w') as csvfile:

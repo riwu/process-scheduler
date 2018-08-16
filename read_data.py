@@ -63,6 +63,7 @@ class Machine(object):
 
     def reset(self):
         self.__dict__ = self.original_dict
+        self.original_dict = self.__dict__
         self.jobs = []
         self.apps = {}
 
