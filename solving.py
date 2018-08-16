@@ -49,13 +49,13 @@ def add_to_machine(job, only_use_new_machine=False):
     print('out of machines job', job)
     raise Exception('Out of machines!')
 
-for m, machine in enumerate(machine_objects_lst):
-    # print('m', m)
-    for i, job in reversed(list(enumerate(machine.jobs))):
-        machine.remove_job(i)
-        add_to_machine(job)
+# for m, machine in enumerate(machine_objects_lst):
+#     # print('m', m)
+#     for i, job in reversed(list(enumerate(machine.jobs))):
+#         machine.remove_job(i)
+#         add_to_machine(job)
 
-print('done reallocating')
+# print('done reallocating')
 
 def allocate_jobs_to_new_machine(jobs, cpu, prefix_str):
     left_over_jobs = []
@@ -75,10 +75,10 @@ def random_algo():
     # random.shuffle(job_objects_lst_copy)
 
 
-    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.2, "BIG ")
-    debug_progress('big jobs done')
-    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.4, "MEDIUM ")
-    debug_progress('medium jobs')
+    # job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.2, "BIG ")
+    # debug_progress('big jobs done')
+    # job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.4, "MEDIUM ")
+    # debug_progress('medium jobs')
     for i, job in enumerate(job_objects_lst_copy):
         debug_progress('small ', i)
         add_to_machine(job)
@@ -88,7 +88,11 @@ while True:
     random_algo()
     timestamp = '' # str(time.time()).replace('.', '')
     output_csv = 'Judge/outputSample' + '.csv'
+
     cost = compute_cost(machine_objects_lst)
+    jobs_with_resources_dict, job_objects_lst, machine_dict
+    # print(jobs_with_resources_dict["inst_90555"].interference)
+    # print(machine_dict["machine_5955"].apps["app_1637"])
     if lowest_cost == None or cost < lowest_cost:
         lowest_cost = cost
 

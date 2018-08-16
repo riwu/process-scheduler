@@ -14,6 +14,11 @@ import os
 from collections import defaultdict
 import copy
 
+NUM_OF_JOBS = 68224
+NUM_OF_LIMITED_JOBS = 9338
+CPU_SOFT_LIMIT = 1
+CSV_FILE = "scheduling_instance_deploy10k.csv"
+DEBUG = False
 pd.set_option('display.max_columns', None)
 DATA_FOLDER = "Judge"
 DURATION = 98
@@ -39,11 +44,7 @@ ELEMENTS_TO_UPDATE = ['disk', 'p', 'm', 'pm', 'cpu_0', 'cpu_1', 'cpu_2', 'cpu_3'
                       'mem_75', 'mem_76', 'mem_77', 'mem_78', 'mem_79', 'mem_80', 'mem_81', 'mem_82', 'mem_83',
                       'mem_84', 'mem_85', 'mem_86', 'mem_87', 'mem_88', 'mem_89', 'mem_90', 'mem_91', 'mem_92',
                       'mem_93', 'mem_94', 'mem_95', 'mem_96', 'mem_97']
-NUM_OF_JOBS = 68224
-NUM_OF_LIMITED_JOBS = 9338
-CPU_SOFT_LIMIT = 1
-CSV_FILE = "scheduling_instance_deploy1k.csv"
-DEBUG = False
+
 
 
 def debug(*msg):
@@ -117,9 +118,20 @@ class Job(object):
                 self.max_cpu = max(self.max_cpu, v)
         # self.assigned_machine_id = None
         self.interference = interference_dict
+        if self.inst_id == "inst_90555":
+            print("initial interference dict for 90555", interference_dict)
 
     def check_interference(self, machine):
         cnt_new_app_id = machine.apps.get(self.app_id, 0) + 1
+        # if self.inst_id == "inst_90555":
+        #     print("_____________")
+        #
+        #     print("New number of my app id if i get added: ", cnt_new_app_id)
+        #     print(self.interference)
+        #     for job in machine.jobs:
+        #         print("job being compared: ", job.inst_id, " where appid is ", job.app_id)
+        #         print("my own interference limit: ", self.interference.get(job.app_id, 0))
+        #         print("num of app id on machine: ", job.app_id, machine.apps.get(job.app_id))
 
         for job in machine.jobs:
             interference = job.interference
@@ -133,7 +145,6 @@ class Job(object):
             # for k, v in self.interference.items():
             #     if k == job.app_id and v < machine.apps.get(job.app_id) + 1:
             #         return False
-
         return True
 
     def get_max_cpu(self):
@@ -180,10 +191,10 @@ def data_parsing_main():
         row_appid1 = row["app_id1"]
         row_appid2 = row["app_id2"]
         cap = row["max_app2"]
-        if row_appid2 in job_limits:
-            job_limits[row_appid2][row_appid1] = cap
+        if row_appid1 in job_limits:
+            job_limits[row_appid1][row_appid2] = cap
         else:
-            job_limits[row_appid2] = {row_appid1: cap}
+            job_limits[row_appid1] = {row_appid2: cap}
     print(job_limits["app_7845"])
     # check job limit count
     print("LENGTH OF JOB LIMITS ", len(job_limits.keys()))
@@ -191,12 +202,13 @@ def data_parsing_main():
 
     print(jobs.columns)
     print(app_resources.columns)
+    print("Original job limits dict for app_5905 ->app_1637: ", job_limits["app_5905"]["app_1637"])
     jobs_with_resources = pd.merge(jobs, app_resources, how='left', on=['app_id'])
     jobs_with_resources_dict = {}
     job_objects_lst = []
     for row in jobs_with_resources.to_dict(orient="records"):
         if row["app_id"] in job_limits:
-            row["interference"] = job_limits["app_id"]
+            row["interference"] = job_limits[row["app_id"]]
         else:
             row["interference"] = {}
         # row["assigned_machine_id"] = None
@@ -207,7 +219,6 @@ def data_parsing_main():
     machine_dict = {}
     machine_objects_lst = []
     for row in machine_resources.to_dict("records"):
-
         new_item = {}
         new_item["machine_id"] = row["machine_id"]
         for i in range(DURATION):
