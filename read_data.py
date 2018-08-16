@@ -118,26 +118,15 @@ class Job(object):
                 self.max_cpu = max(self.max_cpu, v)
         # self.assigned_machine_id = None
         self.interference = interference_dict
-        if self.inst_id == "inst_90555":
-            print("initial interference dict for 90555", interference_dict)
 
     def check_interference(self, machine):
         cnt_new_app_id = machine.apps.get(self.app_id, 0) + 1
-        if self.inst_id == "inst_85340":
-            print("_____________")
-
-            print("New number of my app id if i get added: ", cnt_new_app_id)
-            print(self.interference)
-            for existing_job in machine.jobs:
-                print("job being compared: ", existing_job.inst_id, " where appid is ", existing_job.app_id)
-                print("my own interference limit: ", self.interference.get(existing_job.app_id, 0))
-                print("num of app id on machine: ", existing_job.app_id, machine.apps.get(existing_job.app_id))
-
         for existing_job in machine.jobs:
             if self.app_id in existing_job.interference and cnt_new_app_id > existing_job.interference[self.app_id]:
                 return False
 
-            if existing_job.app_id in self.interference and machine.apps.get(existing_job.app_id) > self.interference[existing_job.app_id]:
+            if existing_job.app_id in self.interference and machine.apps.get(existing_job.app_id) > self.interference[
+                existing_job.app_id]:
                 return False
 
         return True
@@ -155,7 +144,7 @@ def get_csv(short_name, header_lst=None, known_short_name=None):
     else:
         loc = list(filter(lambda x: "csv" in x and short_name in x, os.listdir(DATA_FOLDER)))[0]
     full_loc = os.path.join(os.getcwd(), DATA_FOLDER, loc)
-    print("For ", short_name, " Using file at: ", full_loc)
+    debug("For ", short_name, " Using file at: ", full_loc)
     res = pd.read_csv(full_loc, names=header_lst)
     return res
 
@@ -190,14 +179,13 @@ def data_parsing_main():
             job_limits[row_appid1][row_appid2] = cap
         else:
             job_limits[row_appid1] = {row_appid2: cap}
-    print(job_limits["app_7845"])
     # check job limit count
-    print("LENGTH OF JOB LIMITS ", len(job_limits.keys()))
-    print(job_limits)
+    debug("LENGTH OF JOB LIMITS ", len(job_limits.keys()))
+    debug(job_limits)
 
-    print(jobs.columns)
-    print(app_resources.columns)
-    print("Original job limits dict for app_5905 ->app_1637: ", job_limits["app_5905"]["app_1637"])
+    debug(jobs.columns)
+    debug(app_resources.columns)
+    debug("Original job limits dict for app_5905 ->app_1637: ", job_limits["app_5905"]["app_1637"])
     jobs_with_resources = pd.merge(jobs, app_resources, how='left', on=['app_id'])
     jobs_with_resources_dict = {}
     job_objects_lst = []

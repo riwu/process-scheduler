@@ -8,13 +8,19 @@ from checker import compute_cost, get_alibaba_score
 import time
 import pprint
 
-DEBUG_PROGRESS = True
+DEBUG_PROGRESS = False
 
 jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst = data_parsing_main()
 
 machine_objects_lst.reverse()
 big_machine_cpu = machine_objects_lst[0].cpu_0
 small_machine_cpu = machine_objects_lst[-1].cpu_0
+
+
+def debug_progress(*args):
+    if DEBUG_PROGRESS:
+        print(*args)
+
 
 remaining_jobs = []
 for i, job in enumerate(job_objects_lst):
@@ -26,11 +32,8 @@ for i, job in enumerate(job_objects_lst):
     if not job_added:
         remaining_jobs.append(job)
 
-print('remaining jobs', len(remaining_jobs))
+debug_progress('remaining jobs', len(remaining_jobs))
 
-def debug_progress(*args):
-    if DEBUG_PROGRESS:
-        print(*args)
 
 def add_to_machine(job, csv_writer, only_use_new_machine=False):
     for i, machine in enumerate(machine_objects_lst):
@@ -42,6 +45,7 @@ def add_to_machine(job, csv_writer, only_use_new_machine=False):
             debug('machine not ok')
     print('out of machines job', job)
     raise Exception('Out of machines!')
+
 
 # for m, machine in enumerate(machine_objects_lst):
 #     # print('m', m)
@@ -57,16 +61,16 @@ def allocate_jobs_to_new_machine(jobs, cpu, prefix_str, csv_writer):
         if job.max_cpu >= cpu:
             debug('job high', job.max_cpu, i)
             add_to_machine(job, csv_writer, False)
-            print(prefix_str + " " + str(i))
+            debug_progress(prefix_str + " " + str(i))
         else:
             left_over_jobs.append(job)
-    print('left over', len(left_over_jobs))
+    debug_progress('left over', len(left_over_jobs))
     return left_over_jobs
 
 
 def random_algo(csv_writer):
     job_objects_lst_copy = list(remaining_jobs)
-    # random.shuffle(job_objects_lst_copy)
+    random.shuffle(job_objects_lst_copy)
 
     job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.4, "BIG ", csv_writer)
     debug_progress('big jobs done')
@@ -81,7 +85,7 @@ lowest_cost = None
 file_name = None
 
 while True:
-    timestamp = '' # str(time.time()).replace('.', '')
+    timestamp = ''  # str(time.time()).replace('.', '')
     output_csv = 'Judge/outputSample' + timestamp + '.csv'
 
     with open(output_csv, 'w') as csvfile:
@@ -104,4 +108,3 @@ while True:
         machine.reset()
 
     print('cost', cost, output_csv, lowest_cost, file_name)
-    break
