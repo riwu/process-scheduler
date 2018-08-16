@@ -10,10 +10,13 @@ BETA = 0.5
 def run_bash_command(bash_command):
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
-    output_utf = re.findall("\d+\.\d+", output.decode("utf_8"))[0]
-    print(output_utf)
-    score = float(output_utf[output_utf.find("选手所得分数为：") + len("选手所得分数为："):])
-    return score, output_utf, error
+    decoded_output = output.decode("utf_8")
+    print('raw output', output)
+    print('decoded output', decoded_output)
+    output_utf = re.findall("\d+\.\d+E?\d?", decoded_output)[0]
+    print('float output: ', output_utf)
+    score = float(output_utf)
+    return score
 
 def get_alibaba_score(instance_deploy_file, output_file ):
     return run_bash_command(

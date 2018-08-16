@@ -17,7 +17,7 @@ import copy
 NUM_OF_JOBS = 68224
 NUM_OF_LIMITED_JOBS = 9338
 CPU_SOFT_LIMIT = 1
-CSV_FILE = "scheduling_instance_deploy10k.csv"
+CSV_FILE = "scheduling_instance_deploy30k.csv"
 DEBUG = False
 pd.set_option('display.max_columns', None)
 DATA_FOLDER = "Judge"

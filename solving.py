@@ -51,12 +51,12 @@ def add_to_machine(job, csv_writer, only_use_new_machine=False):
 
 # print('done reallocating')
 
-def allocate_jobs_to_new_machine(jobs, cpu, prefix_str):
+def allocate_jobs_to_new_machine(jobs, cpu, prefix_str, csv_writer):
     left_over_jobs = []
     for i, job in enumerate(jobs):
         if job.max_cpu >= cpu:
             debug('job high', job.max_cpu, i)
-            add_to_machine(job, False)
+            add_to_machine(job, csv_writer, False)
             print(prefix_str + " " + str(i))
         else:
             left_over_jobs.append(job)
@@ -68,10 +68,9 @@ def random_algo(csv_writer):
     job_objects_lst_copy = list(remaining_jobs)
     # random.shuffle(job_objects_lst_copy)
 
-
-    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.4, "BIG ")
+    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.3, "BIG ", csv_writer)
     debug_progress('big jobs done')
-    # job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.4, "MEDIUM ")
+    # job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.4, "MEDIUM ", csv_writer)
     # debug_progress('medium jobs')
     for i, job in enumerate(job_objects_lst_copy):
         debug_progress('small ', i)
@@ -85,10 +84,9 @@ while True:
     timestamp = '' # str(time.time()).replace('.', '')
     output_csv = 'Judge/outputSample' + timestamp + '.csv'
 
-    csvfile = open(output_csv, 'w')
-    csv_writer = csv.writer(csvfile)
-
-    random_algo(csv_writer)
+    with open(output_csv, 'w') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        random_algo(csv_writer)
 
     cost = get_alibaba_score(DATA_FOLDER + "/" + CSV_FILE, output_csv)
     if lowest_cost == None or cost < lowest_cost:
