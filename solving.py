@@ -16,7 +16,9 @@ def debug_progress(*args):
         print(*args)
 
 def add_to_machine_for_cpu_limit(job, csv_writer, only_use_new_machine=False, cpu_limit = 1):
-    for i, machine in enumerate(machine_objects_lst):
+    machine_objects_lst_copy = list(machine_objects_lst)
+    random.shuffle(machine_objects_lst_copy)
+    for i, machine in enumerate(machine_objects_lst_copy):
         debug('machine', i, machine.cpu_0)
         if machine.add_job(job, only_use_new_machine, False, cpu_limit):
             csv_writer.writerow([job.inst_id, machine.machine_id])
