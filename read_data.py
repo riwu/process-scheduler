@@ -17,7 +17,7 @@ import copy
 NUM_OF_JOBS = 68224
 NUM_OF_LIMITED_JOBS = 9338
 CPU_SOFT_LIMIT = 1
-CSV_FILE = "scheduling_instance_deploy.csv"
+CSV_FILE = "scheduling_instance_deploy1k.csv"
 DEBUG = False
 pd.set_option('display.max_columns', None)
 DATA_FOLDER = "Judge"
@@ -105,10 +105,15 @@ class Machine(object):
         debug('new job', new_job)
         return True
 
-    def remove_job(self, index):
-        job = self.jobs.pop(index)
-        self.apps[job.app_id] -= 1
-
+    def remove_job(self, inst_id):
+        for j in self.jobs:
+            if j.inst_id == inst_id:
+                job_to_remove = j
+        self.apps[job_to_remove.app_id] -= 1
+        for k in ELEMENTS_TO_UPDATE:
+            machine_k = getattr(self, k)
+            job_k = getattr(job_to_remove, k)
+            setattr(self, k, machine_k + job_k)
 
 class Job(object):
     def __init__(self, d, interference_dict):

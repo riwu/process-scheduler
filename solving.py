@@ -10,30 +10,10 @@ import pprint
 
 DEBUG_PROGRESS = False
 
-jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst = data_parsing_main()
-
-machine_objects_lst.reverse()
-big_machine_cpu = machine_objects_lst[0].cpu_0
-small_machine_cpu = machine_objects_lst[-1].cpu_0
-
 
 def debug_progress(*args):
     if DEBUG_PROGRESS:
         print(*args)
-
-
-remaining_jobs = []
-for i, job in enumerate(job_objects_lst):
-    job_added = False
-    for j, machine in enumerate(machine_objects_lst):
-        if job.machine_id == machine.machine_id:
-            machine.add_job(job, False, True)
-            job_added = True
-    if not job_added:
-        remaining_jobs.append(job)
-
-debug_progress('remaining jobs', len(remaining_jobs))
-
 
 def add_to_machine(job, csv_writer, only_use_new_machine=False):
     for i, machine in enumerate(machine_objects_lst):
@@ -46,14 +26,14 @@ def add_to_machine(job, csv_writer, only_use_new_machine=False):
     print('out of machines job', job)
     raise Exception('Out of machines!')
 
+def fix_initial_allocation(machine_objects_lst, csv_writer):
+    for m, machine in enumerate(machine_objects_lst):
+        # print('m', m)
+        for i, job in list(enumerate(machine.jobs)):
+            machine.remove_job(job.inst_id)
+            add_to_machine(job, csv_writer)
 
-# for m, machine in enumerate(machine_objects_lst):
-#     # print('m', m)
-#     for i, job in reversed(list(enumerate(machine.jobs))):
-#         machine.remove_job(i)
-#         add_to_machine(job)
-
-# print('done reallocating')
+    print('done reallocating')
 
 def allocate_jobs_to_new_machine(jobs, cpu, prefix_str, csv_writer):
     left_over_jobs = []
@@ -80,6 +60,10 @@ def random_algo(csv_writer):
         debug_progress('small ', i)
         add_to_machine(job, csv_writer)
 
+jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst = data_parsing_main()
+machine_objects_lst.reverse()
+big_machine_cpu = machine_objects_lst[0].cpu_0
+small_machine_cpu = machine_objects_lst[-1].cpu_0
 
 lowest_cost = None
 file_name = None
@@ -88,8 +72,21 @@ while True:
     timestamp = str(time.time()).replace('.', '')
     output_csv = 'Judge/outputSample' + timestamp + '.csv'
 
+
     with open(output_csv, 'w') as csvfile:
         csv_writer = csv.writer(csvfile)
+        remaining_jobs = []
+        for i, job in enumerate(job_objects_lst):
+            job_added = False
+            for j, machine in enumerate(machine_objects_lst):
+                if job.machine_id == machine.machine_id:
+                    machine.add_job(job, False, True)
+                    job_added = True
+            if not job_added:
+                remaining_jobs.append(job)
+
+        fix_initial_allocation(machine_objects_lst, csv_writer)
+        debug_progress('remaining jobs', len(remaining_jobs))
         random_algo(csv_writer)
 
     cost = get_alibaba_score(DATA_FOLDER + "/" + CSV_FILE, output_csv)
