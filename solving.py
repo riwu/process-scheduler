@@ -26,7 +26,7 @@ def add_to_machine_for_cpu_limit(job, csv_writer, only_use_new_machine=False, cp
     debug('out of machines job', job)
 
 def add_to_machine(job, csv_writer, only_use_new_machine=False):
-    cpu_limits = [0.5, 1]
+    cpu_limits = [0.5, 0.6, 1]
     for cpu_limit in cpu_limits:
         if add_to_machine_for_cpu_limit(job, csv_writer, only_use_new_machine, cpu_limit):
             return
@@ -35,8 +35,9 @@ def add_to_machine(job, csv_writer, only_use_new_machine=False):
 
 def fix_initial_allocation(machine_objects_lst, csv_writer):
     cnt = 0
-
-    for i, machine in enumerate(machine_objects_lst):
+    machine_objects_lst_copy = list(machine_objects_lst)
+    random.shuffle(machine_objects_lst_copy)
+    for i, machine in enumerate(machine_objects_lst_copy):
         print('fixing machine', i)
         if score_machine(machine) > REALLOCATION_THRESHOLD:
             cnt += 1
