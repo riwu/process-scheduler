@@ -4,12 +4,12 @@
 from read_data import data_parsing_main, debug, CSV_FILE, DATA_FOLDER
 import random
 import csv
-from checker import compute_cost, get_alibaba_score
+from checker import compute_cost, get_alibaba_score,score_machine
 import time
 import pprint
 
 DEBUG_PROGRESS = True
-COST_TO_REALLOCATE = 2
+COST_TO_REALLOCATE = 1.5
 
 def debug_progress(*args):
     if DEBUG_PROGRESS:
@@ -30,7 +30,7 @@ def fix_initial_allocation(machine_objects_lst, csv_writer):
     for m, machine in enumerate(machine_objects_lst):
         # print('m', m)
         cnt = 0
-        if compute_cost(machine) > COST_TO_REALLOCATE:
+        if score_machine(machine) > COST_TO_REALLOCATE:
             cnt += 1
             for i, job in list(enumerate(machine.jobs)):
                 machine.remove_job(job.inst_id)
@@ -111,5 +111,5 @@ while True:
 
     for machine in machine_objects_lst:
         machine.reset()
-
+    break
 
