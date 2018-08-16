@@ -34,9 +34,10 @@ def add_to_machine(job, csv_writer, only_use_new_machine=False):
 
 
 def fix_initial_allocation(machine_objects_lst, csv_writer):
+    cnt = 0
+
     for i, machine in enumerate(machine_objects_lst):
         # print('m', m)
-        cnt = 0
 
         if score_machine(machine) > REALLOCATION_THRESHOLD:
             cnt += 1
@@ -51,7 +52,7 @@ def allocate_jobs_to_new_machine(jobs, cpu, prefix_str, csv_writer):
     for i, job in enumerate(jobs):
         if job.max_cpu >= cpu:
             debug('job high', job.max_cpu, i)
-            add_to_machine(job, csv_writer, False)
+            add_to_machine(job, csv_writer, True)
             debug_progress(prefix_str + " " + str(i))
         else:
             left_over_jobs.append(job)
@@ -100,10 +101,10 @@ while True:
         for m in machine_objects_lst:
             if score_machine(m) > 1:
                 print("BIGGER THAN 1")
-        fix_initial_allocation(machine_objects_lst, csv_writer)
         debug_progress('remaining jobs', len(remaining_jobs))
         try:
             random_algo(csv_writer)
+            fix_initial_allocation(machine_objects_lst, csv_writer)
         except:
             pass
 
