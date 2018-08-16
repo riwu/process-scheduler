@@ -8,11 +8,9 @@ from checker import compute_cost, get_alibaba_score
 import time
 import pprint
 
-DEBUG_PROGRESS = False
+DEBUG_PROGRESS = True
 
 jobs_with_resources_dict, job_objects_lst, machine_dict, machine_objects_lst = data_parsing_main()
-
-lowest_cost = None
 
 machine_objects_lst.reverse()
 big_machine_cpu = machine_objects_lst[0].cpu_0
@@ -30,15 +28,11 @@ for i, job in enumerate(job_objects_lst):
 
 print('remaining jobs', len(remaining_jobs))
 
-file_name = 'Judge/outputSample' + '.csv'
-csvfile = open(file_name, 'w')
-csv_writer = csv.writer(csvfile)
-
 def debug_progress(*args):
     if DEBUG_PROGRESS:
         print(*args)
 
-def add_to_machine(job, only_use_new_machine=False):
+def add_to_machine(job, csv_writer, only_use_new_machine=False):
     for i, machine in enumerate(machine_objects_lst):
         debug('machine', i, machine.cpu_0)
         if machine.add_job(job, only_use_new_machine):
@@ -70,49 +64,46 @@ def allocate_jobs_to_new_machine(jobs, cpu, prefix_str):
     return left_over_jobs
 
 
-def random_algo():
+def random_algo(csv_writer):
     job_objects_lst_copy = list(remaining_jobs)
     # random.shuffle(job_objects_lst_copy)
 
 
-    # job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.2, "BIG ")
-    # debug_progress('big jobs done')
+    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.4, "BIG ")
+    debug_progress('big jobs done')
     # job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.4, "MEDIUM ")
     # debug_progress('medium jobs')
     for i, job in enumerate(job_objects_lst_copy):
         debug_progress('small ', i)
-        add_to_machine(job)
+        add_to_machine(job, csv_writer)
 
+
+lowest_cost = None
+file_name = None
 
 while True:
-    random_algo()
     timestamp = '' # str(time.time()).replace('.', '')
-    output_csv = 'Judge/outputSample' + '.csv'
+    output_csv = 'Judge/outputSample' + timestamp + '.csv'
 
-    cost = compute_cost(machine_objects_lst)
-    jobs_with_resources_dict, job_objects_lst, machine_dict
-    # print(jobs_with_resources_dict["inst_90555"].interference)
-    # print(machine_dict["machine_5955"].apps["app_1637"])
+    csvfile = open(output_csv, 'w')
+    csv_writer = csv.writer(csvfile)
+
+    random_algo(csv_writer)
+
+    cost = get_alibaba_score(DATA_FOLDER + "/" + CSV_FILE, output_csv)
     if lowest_cost == None or cost < lowest_cost:
         lowest_cost = cost
+        file_name = output_csv
+        # with open(output_csv, 'w') as csvfile:
+        #     csv_writer = csv.writer(csvfile)
+        #
+        #     for machine in machine_objects_lst:
+        #         for job in machine.jobs:
+        #             debug(job.inst_id + ',' + machine.machine_id)
+        #             csv_writer.writerow([job.inst_id, machine.machine_id])
 
-        with open(output_csv, 'w') as csvfile:
-            csv_writer = csv.writer(csvfile)
-
-            for machine in machine_objects_lst:
-                for job in machine.jobs:
-                    debug(job.inst_id + ',' + machine.machine_id)
-                    csv_writer.writerow([job.inst_id, machine.machine_id])
-
-    # DEBUGGING
-    # pprint.pprint(jobs_with_resources_dict["inst_37090"])
-    # pprint.pprint(machine_dict["machine_5995"])
-    print()
-    # DEBUGGING
-
-    print("Output from alibaba eval: ", get_alibaba_score(DATA_FOLDER + "/" + CSV_FILE, output_csv))
     for machine in machine_objects_lst:
         machine.reset()
 
-    print('cost', cost, lowest_cost, file_name)
+    print('cost', cost, output_csv, lowest_cost, file_name)
     break

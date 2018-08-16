@@ -2,6 +2,7 @@ import math
 from read_data import DURATION
 import subprocess
 import os
+import re
 ALPHA = 10
 BETA = 0.5
 
@@ -9,9 +10,9 @@ BETA = 0.5
 def run_bash_command(bash_command):
     process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
-    output_utf = output.decode("utf_8")
+    output_utf = re.findall("\d+\.\d+", output.decode("utf_8"))[0]
     print(output_utf)
-    score = float(output.decode("utf_8")[output_utf.find("选手所得分数为：") + len("选手所得分数为："):])
+    score = float(output_utf[output_utf.find("选手所得分数为：") + len("选手所得分数为："):])
     return score, output_utf, error
 
 def get_alibaba_score(instance_deploy_file, output_file ):
