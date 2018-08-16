@@ -103,7 +103,8 @@ while True:
         debug_progress('remaining jobs', len(remaining_jobs))
         try:
             random_algo(csv_writer)
-            fix_initial_allocation(machine_objects_lst, csv_writer)
+            for i in range(20):
+                fix_initial_allocation(machine_objects_lst, csv_writer)
         except:
             pass
 
