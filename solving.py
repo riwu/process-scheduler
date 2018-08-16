@@ -60,7 +60,7 @@ def allocate_jobs_to_new_machine(jobs, cpu, prefix_str, csv_writer):
             print(prefix_str + " " + str(i))
         else:
             left_over_jobs.append(job)
-    debug('left over', len(left_over_jobs))
+    print('left over', len(left_over_jobs))
     return left_over_jobs
 
 
@@ -68,7 +68,7 @@ def random_algo(csv_writer):
     job_objects_lst_copy = list(remaining_jobs)
     # random.shuffle(job_objects_lst_copy)
 
-    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.3, "BIG ", csv_writer)
+    job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, big_machine_cpu * 0.4, "BIG ", csv_writer)
     debug_progress('big jobs done')
     # job_objects_lst_copy = allocate_jobs_to_new_machine(job_objects_lst_copy, small_machine_cpu * 0.4, "MEDIUM ", csv_writer)
     # debug_progress('medium jobs')

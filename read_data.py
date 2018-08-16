@@ -17,7 +17,7 @@ import copy
 NUM_OF_JOBS = 68224
 NUM_OF_LIMITED_JOBS = 9338
 CPU_SOFT_LIMIT = 1
-CSV_FILE = "scheduling_instance_deploy30k.csv"
+CSV_FILE = "scheduling_instance_deploy.csv"
 DEBUG = False
 pd.set_option('display.max_columns', None)
 DATA_FOLDER = "Judge"
@@ -46,7 +46,6 @@ ELEMENTS_TO_UPDATE = ['disk', 'p', 'm', 'pm', 'cpu_0', 'cpu_1', 'cpu_2', 'cpu_3'
                       'mem_93', 'mem_94', 'mem_95', 'mem_96', 'mem_97']
 
 
-
 def debug(*msg):
     if DEBUG:
         print(*msg)
@@ -67,7 +66,7 @@ class Machine(object):
         self.jobs = []
         self.apps = {}
 
-    def add_job(self, new_job, only_use_new_machine = False, initialisation = False):
+    def add_job(self, new_job, only_use_new_machine=False, initialisation=False):
         if not initialisation:
             if not new_job.check_interference(self):
                 debug('Interference detected')
@@ -91,7 +90,7 @@ class Machine(object):
                     debug('resource constraint')
                     return False
 
-                # raise Exception("Attempting to use more than 100% of resource " + k + " .Current Machine State: " + self + " . New job state: " + new_job)
+                    # raise Exception("Attempting to use more than 100% of resource " + k + " .Current Machine State: " + self + " . New job state: " + new_job)
         # actually start mutating
         for k in ELEMENTS_TO_UPDATE:
             machine_k = getattr(self, k)
@@ -109,6 +108,7 @@ class Machine(object):
         job = self.jobs.pop(index)
         self.apps[job.app_id] -= 1
 
+
 class Job(object):
     def __init__(self, d, interference_dict):
         self.__dict__ = d
@@ -123,28 +123,23 @@ class Job(object):
 
     def check_interference(self, machine):
         cnt_new_app_id = machine.apps.get(self.app_id, 0) + 1
-        # if self.inst_id == "inst_90555":
-        #     print("_____________")
-        #
-        #     print("New number of my app id if i get added: ", cnt_new_app_id)
-        #     print(self.interference)
-        #     for job in machine.jobs:
-        #         print("job being compared: ", job.inst_id, " where appid is ", job.app_id)
-        #         print("my own interference limit: ", self.interference.get(job.app_id, 0))
-        #         print("num of app id on machine: ", job.app_id, machine.apps.get(job.app_id))
+        if self.inst_id == "inst_85340":
+            print("_____________")
 
-        for job in machine.jobs:
-            interference = job.interference
-            if cnt_new_app_id > interference.get(self.app_id, 0):
+            print("New number of my app id if i get added: ", cnt_new_app_id)
+            print(self.interference)
+            for existing_job in machine.jobs:
+                print("job being compared: ", existing_job.inst_id, " where appid is ", existing_job.app_id)
+                print("my own interference limit: ", self.interference.get(existing_job.app_id, 0))
+                print("num of app id on machine: ", existing_job.app_id, machine.apps.get(existing_job.app_id))
+
+        for existing_job in machine.jobs:
+            if self.app_id in existing_job.interference and cnt_new_app_id > existing_job.interference[self.app_id]:
                 return False
 
-
-            if self.interference.get(job.app_id, 0) < machine.apps.get(job.app_id):
+            if existing_job.app_id in self.interference and machine.apps.get(existing_job.app_id) > self.interference[existing_job.app_id]:
                 return False
 
-            # for k, v in self.interference.items():
-            #     if k == job.app_id and v < machine.apps.get(job.app_id) + 1:
-            #         return False
         return True
 
     def get_max_cpu(self):
@@ -154,7 +149,7 @@ class Job(object):
         return str(self.__dict__)
 
 
-def get_csv(short_name, header_lst=None, known_short_name = None):
+def get_csv(short_name, header_lst=None, known_short_name=None):
     if known_short_name:
         loc = known_short_name
     else:
