@@ -1,10 +1,10 @@
 # scoring is sum of s_jt where j ranges across all machines and t ranges across all points in time
 # s_jt = 1 + alpha * (exp^(max(0, c - beta)) -1)
 # if deployment invalid, total cost is 1e9
-from read_data import data_parsing_main, debug
+from read_data import data_parsing_main, debug, CSV_FILE, DATA_FOLDER
 import random
 import csv
-from checker import compute_cost
+from checker import compute_cost, get_alibaba_score
 import time
 import pprint
 
@@ -50,7 +50,7 @@ def add_to_machine(job, only_use_new_machine=False):
     raise Exception('Out of machines!')
 
 for m, machine in enumerate(machine_objects_lst):
-    print('m', m)
+    # print('m', m)
     for i, job in reversed(list(enumerate(machine.jobs))):
         machine.remove_job(i)
         add_to_machine(job)
@@ -86,14 +86,13 @@ def random_algo():
 
 while True:
     random_algo()
-    break
     timestamp = '' # str(time.time()).replace('.', '')
-    file_name = 'Judge/outputSample' + '.csv'
+    output_csv = 'Judge/outputSample' + '.csv'
     cost = compute_cost(machine_objects_lst)
     if lowest_cost == None or cost < lowest_cost:
         lowest_cost = cost
 
-        with open(file_name, 'w') as csvfile:
+        with open(output_csv, 'w') as csvfile:
             csv_writer = csv.writer(csvfile)
 
             for machine in machine_objects_lst:
@@ -102,9 +101,12 @@ while True:
                     csv_writer.writerow([job.inst_id, machine.machine_id])
 
     # DEBUGGING
-    pprint.pprint(jobs_with_resources_dict["inst_37090"])
-    pprint.pprint(machine_dict["machine_5995"])
+    # pprint.pprint(jobs_with_resources_dict["inst_37090"])
+    # pprint.pprint(machine_dict["machine_5995"])
+    print()
     # DEBUGGING
+
+    print("Output from alibaba eval: ", get_alibaba_score(DATA_FOLDER + "/" + CSV_FILE, output_csv))
     for machine in machine_objects_lst:
         machine.reset()
 
